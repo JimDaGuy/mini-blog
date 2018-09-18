@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Create a post</title>
+  <meta name="description" content="Page to create a post">
+  <meta name="author" content="James DiGrazia">
+
+  <link rel="stylesheet" href="createCSS">
+
+</head>
+
+<body>
+  <h1>Create a blog post!</h1>
+    <form>
+      <fieldset>
+        <legend>Blog Post Information:</legend>
+        Author Name:<br>
+        <input type="text" name="author" value="James DiGrazia" id="blogAuthor"><br>
+        Article Title:<br>
+        <input type="text" name="title" value="My First Article" id="blogTitle"><br>
+        Header Image (Optional):<br>
+        <input type="text" name="headerImageSrc" value="" id="blogImage"><br>
+        Article Content:<br>
+        <input type="text" name="content" value="Lorem ipsum" id="blogContent"><br>
+        <br>
+        <button type="button" id="submitButton">Submit Blog Post</button>
+      </fieldset>
+    </form>
+    <div id="responseDiv"></div>
+
+  <script src="createJS"></script>
+</body>
+</html>

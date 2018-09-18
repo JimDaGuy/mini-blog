@@ -1,0 +1,13 @@
+{ 
+  "extends": "airbnb/base",
+  "rules": {
+    "no-underscore-dangle" : "off",
+    "no-plusplus": "off",
+    "linebreak-style": "off"
+  },
+  "globals": {
+    "document": true,
+    "window": true,
+    "XMLHttpRequest": true
+  }
+}

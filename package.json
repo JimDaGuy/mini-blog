@@ -1,0 +1,38 @@
+{
+  "name": "mini-blog",
+  "version": "1.0.0",
+  "engines": {
+    "node": "8.11.4",
+    "npm": "5.6.0"
+  },
+  "description": "Static HTML blog \u001b[D, powered by a NodeJS API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./ --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JimDaGuy/mini-blog.git"
+  },
+  "keywords": [
+    "blog",
+    "node",
+    "api"
+  ],
+  "author": "James DiGrazia",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0"
+  },
+  "bugs": {
+    "url": "https://github.com/JimDaGuy/mini-blog/issues"
+  },
+  "homepage": "https://github.com/JimDaGuy/mini-blog#readme",
+  "dependencies": {
+    "mysql": "2.16.0"
+  }
+}
