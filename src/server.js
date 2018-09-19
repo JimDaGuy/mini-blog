@@ -2,10 +2,18 @@ const http = require('http');
 const url = require('url');
 const query = require('querystring');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const sqlFunctions = require('./sqlFunctions.js');
 const staticHandler = require('./staticHandler.js');
 const requestHandler = require('./requestHandler.js');
+// Use local variables file only when running locally
+const localvars = isProduction ? {} : require('./localvars.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
+
+sqlFunctions.setConnectionSettings(isProduction, localvars);
+sqlFunctions.establishConnection(isProduction);
 
 const staticStruct = {
   '/': staticHandler.getHomeHTML,
@@ -23,12 +31,12 @@ const staticStruct = {
 };
 
 const requestStruct = {
-  '/createBlogpost': requestHandler.createPost,
-  '/editBlogpost': '',
-  '/deleteBlogpost': '',
-  '/getArticle': '',
-  '/getBlogposts': '',
-  '/searchBlogposts': '',
+  '/createArticle': requestHandler.createArticle,
+  '/editArticle': '',
+  '/deleteArticle': '',
+  '/getArticle': requestHandler.getArticle,
+  '/getRecentArticles': '',
+  '/searchArticles': '',
   '/routeNotFound': '',
 };
 

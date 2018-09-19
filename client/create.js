@@ -1,12 +1,13 @@
 (function iife() {
   const postBlogArticle = () => {
     const author = document.getElementById('blogAuthor').value;
+    const authorWebsite = document.getElementById('authorWebsite').value;
     const title = document.getElementById('blogTitle').value;
     const imageSrc = document.getElementById('blogImage').value;
     const content = document.getElementById('blogContent').value;
     const responseDiv = document.getElementById('responseDiv');
 
-    const path = `/createBlogpost?author=${author}&title=${title}&imageSrc=${imageSrc}&content=${content}`;
+    const path = `/createArticle?author=${author}&authorWebsite=${authorWebsite}&title=${title}&imageSrc=${imageSrc}&content=${content}`;
 
     // Don't send a request to the API with faulty parameters
     if (author === '' || title === '' || content === '') {
@@ -22,6 +23,7 @@
       responseDiv.innerHTML = xhr.responseText;
 
       document.getElementById('blogAuthor').value = '';
+      document.getElementById('authorWebsite').value = '';
       document.getElementById('blogTitle').value = '';
       document.getElementById('blogImage').value = '';
       document.getElementById('blogContent').value = '';
