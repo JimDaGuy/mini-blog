@@ -10,6 +10,7 @@ const articleTable = {
     headerImageSrc: 'VARCHAR(2083),',
     creationDate: 'TIMESTAMP NOT NULL,',
     lastEditDate: 'TIMESTAMP NOT NULL,',
+    isDeleted: 'BOOLEAN NOT NULL,',
     id: 'CHAR(12) NOT NULL,',
     'CONSTRAINT Article_pk': 'PRIMARY KEY (id)',
   },

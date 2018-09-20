@@ -37,7 +37,7 @@ const requestStruct = {
   '/getArticle': requestHandler.getArticle,
   '/getRecentArticles': '',
   '/searchArticles': '',
-  '/routeNotFound': '',
+  '/routeNotFound': requestHandler.routeNotFound,
 };
 
 const onRequest = (request, response) => {
@@ -52,7 +52,7 @@ const onRequest = (request, response) => {
     return;
   }
 
-  // Call methods that don't require parans
+  // Call methods that don't require params
   if (staticStruct[path]) {
     staticStruct[path](request, response);
     return;
