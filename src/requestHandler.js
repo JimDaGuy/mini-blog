@@ -184,8 +184,8 @@ const getArticle = (request, response, params) => {
             authorWebsite: article.authorWebsite,
             title: article.title,
             content: article.content,
-            imageSrc: article.imageSrc,
-            articleId: article.articleId,
+            imageSrc: article.headerImageSrc,
+            articleId: article.id,
             creationDate: article.creationDate,
             lastEditDate: article.lastEditDate,
           },
@@ -202,10 +202,15 @@ const getArticle = (request, response, params) => {
 };
 
 /*
-editArticle - s
+editArticle - Updates article with the given id in the mysql db
 /////////////////////
 Parameters:
-
+id - char(12) - not null
+author - varchar(256) - not null
+authorWebsite - varchar(256) - can be null
+title - varchar(256) - not null
+content - text - not null
+headerImageSrc - varchar(2083) - can be null
 /////////////////////
 Status Codes:
 204 - Article successfully updated
@@ -266,6 +271,50 @@ const editArticle = (request, response, params) => {
 };
 
 /*
+deleteArticle - 'Deletes' article with the given id (just sets the isDeleted property to true)
+I could actually delete it, but this is effictively the same thing to the user and gives me a
+placeholder for dead links. Might be good for accidental/temporary deletion or something.
+/////////////////////
+Parameters:
+id - char(12) - not null
+/////////////////////
+Status Codes:
+204 - If article with the id passed in existed, it is now deleted
+400 - Can not delete article - faulty parameters or mysql query errored out
+*/
+const deleteArticle = (request, response, params) => {
+  if (!params.id) {
+    const badPostContent = {
+      id: 'missingParams',
+      message: 'An id parameter is needed to delete an article. Missing parameters.',
+    };
+
+    returnJSON(request, response, 400, badPostContent);
+    return;
+  }
+
+  // Set article to isDeleted
+  const deleteArticleQuery = `UPDATE Article SET isDeleted = true WHERE id = '${params.id}'`;
+  const connection = sqlFunctions.getConnection();
+  connection.connect(() => {
+    connection.query(deleteArticleQuery, (err) => {
+      // Send 400 for failed sql search
+      if (err) {
+        const articleNotDeletedContent = {
+          id: 'articleNotDeleted',
+          message: `Could not delete the article. ${err}`,
+        };
+
+        returnJSON(request, response, 400, articleNotDeletedContent);
+      }
+
+      // Article successfully deleted
+      returnHeadJSON(request, response, 204);
+    });
+  });
+};
+
+/*
 routeNotFound - Catch-all method to return a 404 response
 */
 const routeNotFound = (request, response) => {
@@ -287,5 +336,7 @@ module.exports = {
   getArticle,
   // Update
   editArticle,
+  // Delete
+  deleteArticle,
   routeNotFound,
 };

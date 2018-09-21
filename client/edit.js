@@ -85,7 +85,7 @@
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', path);
+    xhr.open('PUT', path);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = () => {
       // Article was updated
