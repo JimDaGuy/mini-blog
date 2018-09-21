@@ -15,6 +15,28 @@
 
 <body>
   <h1>Mini Blog</h1>
+  <h2>Edit Blogpost</h2>
+  <div id="formContainer">
+      <form id="editForm">
+          <fieldset>
+            <legend>Blog Post Information:</legend>
+            Author Name*:<br>
+            <input type="text" name="author" value="" id="blogAuthor"><br>
+            Author Website:<br>
+            <input type="text" name="authorWebsite" value="" id="authorWebsite"><br>
+            Article Title*:<br>
+            <input type="text" name="title" value="" id="blogTitle"><br>
+            Header Image:<br>
+            <input type="text" name="headerImageSrc" value="" id="blogImage"><br>
+            Article Content*:<br>
+            <input type="text" name="content" value="" id="blogContent"><br>
+            <br>
+            <button type="button" id="editButton">Update Blog Post</button><br>
+            <br>*Required
+          </fieldset>
+        </form>
+  </div>
+  <div id="responseContainer"></div>
 
   <script src="editJS"></script>
 </body>

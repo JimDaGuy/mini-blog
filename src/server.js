@@ -32,7 +32,7 @@ const staticStruct = {
 
 const requestStruct = {
   '/createArticle': requestHandler.createArticle,
-  '/editArticle': '',
+  '/editArticle': requestHandler.editArticle,
   '/deleteArticle': '',
   '/getArticle': requestHandler.getArticle,
   '/getRecentArticles': '',

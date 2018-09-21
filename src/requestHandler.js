@@ -110,7 +110,6 @@ Status Codes:
 410 - Article exists, but has been marked 'removed'
 */
 const getArticle = (request, response, params) => {
-  console.dir(request.method);
   // Send bad request if neccesary params are missing
   if (!params.id) {
     const badPostContent = {
@@ -203,6 +202,70 @@ const getArticle = (request, response, params) => {
 };
 
 /*
+editArticle - s
+/////////////////////
+Parameters:
+
+/////////////////////
+Status Codes:
+204 - Article successfully updated
+400 - Can not edit article - faulty parameters or mysql query errored out
+404 - Can not edit article - article is not found
+410 - Can not edit article - article is deleted
+*/
+const editArticle = (request, response, params) => {
+  // Send bad request if neccesary params are missing
+  if (!params.id || !params.author || !params.title || !params.content) {
+    const badPostContent = {
+      id: 'missingParams',
+      message: 'Need id, author, title, and content to edit an article. Missing parameters.',
+    };
+
+    returnJSON(request, response, 400, badPostContent);
+    return;
+  }
+
+  // Form query for inserting Articles into the Article table
+  let editArticleQuery = `UPDATE Article SET author = '${params.author}', authorWebsite = '${params.authorWebsite}',`;
+  editArticleQuery = `${editArticleQuery} title = '${params.title}', content = '${params.content}', headerImageSrc = '${params.imageSrc}',`;
+  editArticleQuery = `${editArticleQuery} lastEditDate = NOW() WHERE isDeleted = 0 AND id = '${params.id}'`;
+
+  // Edit article
+  const connection = sqlFunctions.getConnection();
+  connection.connect(() => {
+    connection.query(editArticleQuery, (err) => {
+      // Send 400 for failed sql search
+      if (err) {
+        const articleNotEditedContent = {
+          id: 'articleNotEdited',
+          message: `Could not update the article. ${err}`,
+        };
+
+        returnJSON(request, response, 400, articleNotEditedContent);
+      }
+
+      // Article successfully edited - send 204
+      /*
+      const articleEditedContent = {
+        id: 'articleEdited',
+        message: 'Article was edited.',
+        article: {
+          author: params.author,
+          authorWebsite: params.authorWebsite,
+          title: params.title,
+          content: params.content,
+          imageSrc: params.imageSrc,
+          articleId: params.articleId,
+        },
+      };
+      */
+
+      returnHeadJSON(request, response, 204);
+    });
+  });
+};
+
+/*
 routeNotFound - Catch-all method to return a 404 response
 */
 const routeNotFound = (request, response) => {
@@ -218,7 +281,11 @@ const routeNotFound = (request, response) => {
 };
 
 module.exports = {
+  // Create
   createArticle,
+  // Read
   getArticle,
+  // Update
+  editArticle,
   routeNotFound,
 };
