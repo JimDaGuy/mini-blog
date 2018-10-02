@@ -9,35 +9,43 @@
   <meta name="description" content="Page to edit a post">
   <meta name="author" content="James DiGrazia">
 
-  <link rel="stylesheet" href="editCSS">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
 
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="editCSS">
+  
 </head>
 
 <body>
   <h1>Mini Blog</h1>
   <h2>Edit Blogpost</h2>
   <div id="formContainer">
-      <form id="editForm">
-          <fieldset>
-            <legend>Blog Post Information:</legend>
-            Author Name*:<br>
-            <input type="text" name="author" value="" id="blogAuthor"><br>
-            Author Website:<br>
-            <input type="text" name="authorWebsite" value="" id="authorWebsite"><br>
-            Article Title*:<br>
-            <input type="text" name="title" value="" id="blogTitle"><br>
-            Header Image:<br>
-            <input type="text" name="headerImageSrc" value="" id="blogImage"><br>
-            Article Content*:<br>
-            <input type="text" name="content" value="" id="blogContent"><br>
-            <br>
-            <button type="button" id="editButton">Update Blog Post</button><br>
-            <br>*Required
-          </fieldset>
-        </form>
+    <form id="editForm">
+      <fieldset>
+        <legend>Blog Post Information:</legend>
+        Author Name*:<br>
+        <input type="text" name="author" value="" id="blogAuthor"><br>
+        Author Website:<br>
+        <input type="text" name="authorWebsite" value="" id="authorWebsite"><br>
+        Article Title*:<br>
+        <input type="text" name="title" value="" id="blogTitle"><br>
+        Header Image:<br>
+        <input type="text" name="headerImageSrc" value="" id="blogImage"><br>
+        Article Content*:<br>
+        <input type="text" name="content" value="" id="blogContent"><br>
+        <br>
+        <button type="button" id="editButton">Update Blog Post</button><br>
+        <br>*Required
+      </fieldset>
+    </form>
   </div>
   <div id="responseContainer"></div>
 
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="editJS"></script>
 </body>
 

@@ -35,7 +35,7 @@ const requestStruct = {
   '/editArticle': requestHandler.editArticle,
   '/deleteArticle': requestHandler.deleteArticle,
   '/getArticle': requestHandler.getArticle,
-  '/getRecentArticles': '',
+  '/getRecentArticles': requestHandler.getRecentArticles,
   '/searchArticles': '',
   '/routeNotFound': requestHandler.routeNotFound,
 };

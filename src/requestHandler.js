@@ -1,4 +1,5 @@
 const sqlFunctions = require('./sqlFunctions.js');
+const escapeQuotes = require('escape-quotes');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const baseUrl = isProduction ? process.env.baseUrl : 'localhost:3000';
@@ -67,18 +68,26 @@ const createArticle = (request, response, params) => {
     articleLink: `${baseUrl}/article?id=${articleId}`,
   };
 
-  // Form query for inserting Articles into the Article table
-  let createArticleQuery = 'INSERT INTO Article (author, authorWebsite, title,';
-  createArticleQuery = `${createArticleQuery} content, headerImageSrc, creationDate,`;
-  createArticleQuery = `${createArticleQuery} lastEditDate, isDeleted, id)`;
-  createArticleQuery = `${createArticleQuery} VALUES ('${params.author}', '${params.authorWebsite}',`;
-  createArticleQuery = `${createArticleQuery} '${params.title}', '${params.content}', '${params.imageSrc}',`;
-  createArticleQuery = `${createArticleQuery} NOW(), NOW(), false, '${articleId}')`;
+  const article = {
+    author: params.author,
+    authorWebsite: params.authorWebsite,
+    title: params.title,
+    content: params.content,
+    headerImageSrc: params.imageSrc,
+    creationDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+    lastEditDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+    isDeleted: false,
+    id: articleId,
+  };
 
+  console.dir(params.content);
+
+  // Form query for inserting Articles into the Article table
+  const createArticleQuery = 'INSERT INTO Article SET ?';
   // Send blogpost to mysql database
   const connection = sqlFunctions.getConnection();
   connection.connect(() => {
-    connection.query(createArticleQuery, (err) => {
+    connection.query(createArticleQuery, [article], (err) => {
       // Send 400 on error and 201 on success
       if (err) {
         const badRequestContent = {
@@ -202,6 +211,91 @@ const getArticle = (request, response, params) => {
 };
 
 /*
+getRecentArticles - Searches the Article table for recent articles
+Returns an articles object containing the requested page of articles
+////////////////////
+Parameters:
+page - page number to return - starts at 1
+rpp - results per page
+////////////////////
+Status Codes:
+200 - Articles returned
+400 - Missing page/rpp parameter or the mysql search has an error
+*/
+const getRecentArticles = (request, response, params) => {
+  // Missing parameters. 400
+  if (!params.page || !params.rpp) {
+    const badPostContent = {
+      id: 'missingParams',
+      message: 'Need page and rpp parameter. Missing parameters.',
+    };
+
+    if (request.method === 'GET') {
+      returnJSON(request, response, 400, badPostContent);
+    } else if (request.method === 'HEAD') {
+      returnHeadJSON(request, response, 400);
+    }
+    return;
+  }
+
+  // Calculate what results to return - 1 indexed pages
+  // (low,high]
+  const lowRow = params.rpp * (params.page - 1);
+  // const highRow = params.page * params.rpp;
+
+  let getRecentQuery = 'SELECT * FROM Article ';
+  getRecentQuery = `${getRecentQuery} WHERE isDeleted != true`;
+  getRecentQuery = `${getRecentQuery} ORDER BY creationDate DESC`;
+  getRecentQuery = `${getRecentQuery} LIMIT ${lowRow}, ${params.rpp}`;
+
+  const connection = sqlFunctions.getConnection();
+  connection.connect(() => {
+    connection.query(getRecentQuery, (err, results) => {
+      // Send 400 on error
+      if (err) {
+        const articlesNotReturnedContent = {
+          id: 'articlesNotReturned',
+          message: `Could not return recent articles. ${err}`,
+        };
+
+        if (request.method === 'GET') {
+          returnJSON(request, response, 400, articlesNotReturnedContent);
+        } else if (request.method === 'HEAD') {
+          returnHeadJSON(request, response, 400);
+        }
+      }
+      // No page results - return 404
+      if (results.length < 1 || !results || results === undefined) {
+        const pageEmptyContent = {
+          id: 'pageEmpty',
+          message: `Page: ${params.page} with ResultsPerPage: ${params.rpp} is empty.`,
+        };
+
+        if (request.method === 'GET') {
+          returnJSON(request, response, 404, pageEmptyContent);
+        } else if (request.method === 'HEAD') {
+          returnHeadJSON(request, response, 404);
+        }
+        return;
+      }
+
+      // Send a 200 with returned articles
+      const articleReturnedContent = {
+        id: 'pageReturned',
+        message: 'The page you requested yielded results.',
+        articles: results,
+      };
+
+      if (request.method === 'GET') {
+        returnJSON(request, response, 200, articleReturnedContent);
+      } else if (request.method === 'HEAD') {
+        returnHeadJSON(request, response, 200);
+      }
+    });
+  });
+};
+
+/*
 editArticle - Updates article with the given id in the mysql db
 /////////////////////
 Parameters:
@@ -232,7 +326,7 @@ const editArticle = (request, response, params) => {
 
   // Form query for inserting Articles into the Article table
   let editArticleQuery = `UPDATE Article SET author = '${params.author}', authorWebsite = '${params.authorWebsite}',`;
-  editArticleQuery = `${editArticleQuery} title = '${params.title}', content = '${params.content}', headerImageSrc = '${params.imageSrc}',`;
+  editArticleQuery = `${editArticleQuery} title = '${params.title}', content = '${escapeQuotes(params.content)}', headerImageSrc = '${params.imageSrc}',`;
   editArticleQuery = `${editArticleQuery} lastEditDate = NOW() WHERE isDeleted = 0 AND id = '${params.id}'`;
 
   // Edit article
@@ -334,9 +428,11 @@ module.exports = {
   createArticle,
   // Read
   getArticle,
+  getRecentArticles,
   // Update
   editArticle,
   // Delete
   deleteArticle,
+  // Catch All
   routeNotFound,
 };

@@ -1,0 +1,55 @@
+h1 {
+  text-align: center;
+}
+
+#articleListContainer {
+  width: 50%;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 10px;
+  margin: 10px 0 10px 5%;
+}
+
+.articleDiv {
+  width: 100%;
+  border: 2px dashed lightblue;
+  margin: 5px auto;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.articleHeadline {
+  width: 70%;
+  height: 1.5em;
+  line-height: 1.5em;
+  float: left;
+  background-color: rgba(76, 226, 49, 0.6);
+}
+.articleAuthor {
+  width: 30%;
+  height: 1.5em;
+  line-height: 1.5em;
+  float: right;
+  text-align: right;
+  background-color: rgba(76, 226, 49, .6);
+}
+
+.articleSecondaryLine {
+  width: 60%;
+  height: 1.5em;
+  line-height: 1.5em;
+  overflow: hidden;
+  float: left;
+  background-color: rgba(113, 202, 238, 0.6);
+}
+
+.articleCreationDate {
+  width: 40%;
+  max-height: 1.5em;
+  height: 1.5em;
+  overflow: hidden;
+  float: right;  
+  text-align: right;
+  background-color: rgba(113, 202, 238, 0.6);
+}
+
