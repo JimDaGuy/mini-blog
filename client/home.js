@@ -8,7 +8,7 @@
     // Send post request to /getArticle
     const xhr = new XMLHttpRequest();
     xhr.open('GET', path);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = () => {
       console.dir(xhr.responseText);
       const responseJSON = JSON.parse(xhr.responseText);

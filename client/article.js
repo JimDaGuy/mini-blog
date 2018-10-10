@@ -10,47 +10,48 @@
       return;
     }
 
-    // Send post request to /getArticle
-    // eslint-disable-next-line
-    axios.get('/getArticle', {
-      params: {
-        id: articleId,
-      },
-    })
-      .then((response) => {
-        // Display article
-        if (response.status === 200) {
-          const articleJSON = response.data.article;
-          let contentString = `<div style="background-image:${articleJSON.imageSrc};"><h2>${articleJSON.title}</h2>`;
-          contentString = `${contentString} <p>${articleJSON.content}</p></div>`;
-          articleContainer.innerHTML = contentString;
-          return;
-        }
+    const path = `/getArticle?id=${articleId}`;
 
-        // Article not found page
-        if (response.status === 404) {
-          let contentString = '<h2>Article Not Found</h2>';
-          contentString = `${contentString} <p>The article you are looking for could not be found.</p>`;
-          articleContainer.innerHTML = contentString;
-          return;
-        }
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', path);
+    xhr.setRequestHeader('Content-Type', 'application/application/x-www-form-urlencoded');
+    xhr.onload = () => {
+      const response = JSON.parse(xhr.response);
+      // Display article
+      if (xhr.status === 200) {
+        const articleJSON = response.article;
+        let contentString = `<div style="background-image:${articleJSON.imageSrc};"><h2>${articleJSON.title}</h2>`;
+        contentString = `${contentString} <p>${articleJSON.content}</p></div>`;
+        articleContainer.innerHTML = contentString;
+        return;
+      }
 
-        // Article deleted page
-        if (response.status === 410) {
-          let contentString = '<h2>Article Deleted</h2>';
-          contentString = `${contentString} <p>The article you are looking for has been removed. Sorry!</p>`;
-          articleContainer.innerHTML = contentString;
-          return;
-        }
+      // Article not found page
+      if (xhr.status === 404) {
+        let contentString = '<h2>Article Not Found</h2>';
+        contentString = `${contentString} <p>The article you are looking for could not be found.</p>`;
+        articleContainer.innerHTML = contentString;
+        return;
+      }
 
-        // If an unhandled response is recieved, just stick the response in the div
-        articleContainer.innerHTML = response.data.message;
-      });
+      // Article deleted page
+      if (xhr.status === 410) {
+        let contentString = '<h2>Article Deleted</h2>';
+        contentString = `${contentString} <p>The article you are looking for has been removed. Sorry!</p>`;
+        articleContainer.innerHTML = contentString;
+        return;
+      }
+
+      // If an unhandled response is recieved, just stick the response in the div
+      articleContainer.innerHTML = response.message;
+    };
+
+    xhr.send();
   };
 
   const init = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    displayBlogArticle(urlParams.get('id'));
+    displayBlogArticle(encodeURIComponent(urlParams.get('id')));
   };
 
   window.onload = init;

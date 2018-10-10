@@ -1,5 +1,4 @@
 const sqlFunctions = require('./sqlFunctions.js');
-const escapeQuotes = require('escape-quotes');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const baseUrl = isProduction ? process.env.baseUrl : 'localhost:3000';
@@ -79,8 +78,6 @@ const createArticle = (request, response, params) => {
     isDeleted: false,
     id: articleId,
   };
-
-  console.dir(params.content);
 
   // Form query for inserting Articles into the Article table
   const createArticleQuery = 'INSERT INTO Article SET ?';
@@ -238,19 +235,26 @@ const getRecentArticles = (request, response, params) => {
     return;
   }
 
-  // Calculate what results to return - 1 indexed pages
-  // (low,high]
-  const lowRow = params.rpp * (params.page - 1);
-  // const highRow = params.page * params.rpp;
+  if (isNaN(params.page) || isNaN(params.rpp)) {
+    const badPostContent = {
+      id: 'missingParams',
+      message: 'Page number or results per page is not a number. Bad parameters.',
+    };
 
-  let getRecentQuery = 'SELECT * FROM Article ';
-  getRecentQuery = `${getRecentQuery} WHERE isDeleted != true`;
-  getRecentQuery = `${getRecentQuery} ORDER BY creationDate DESC`;
-  getRecentQuery = `${getRecentQuery} LIMIT ${lowRow}, ${params.rpp}`;
+    if (request.method === 'GET') {
+      returnJSON(request, response, 400, badPostContent);
+    } else if (request.method === 'HEAD') {
+      returnHeadJSON(request, response, 400);
+    }
+    return;
+  }
+
+  const lowRow = params.rpp * (params.page - 1);
 
   const connection = sqlFunctions.getConnection();
+
   connection.connect(() => {
-    connection.query(getRecentQuery, (err, results) => {
+    connection.query(`SELECT * FROM Article WHERE isDeleted = false ORDER BY creationDate DESC LIMIT ${params.rpp} OFFSET ${lowRow}`, (err, results) => {
       // Send 400 on error
       if (err) {
         const articlesNotReturnedContent = {
@@ -263,12 +267,14 @@ const getRecentArticles = (request, response, params) => {
         } else if (request.method === 'HEAD') {
           returnHeadJSON(request, response, 400);
         }
+        return;
       }
+
       // No page results - return 404
-      if (results.length < 1 || !results || results === undefined) {
+      if (!results || !results[0] || results === undefined) {
         const pageEmptyContent = {
           id: 'pageEmpty',
-          message: `Page: ${params.page} with ResultsPerPage: ${params.rpp} is empty.`,
+          message: `Page: ${params.page} with ResultsPerPage: ${params.rpp}, is empty.`,
         };
 
         if (request.method === 'GET') {
@@ -324,15 +330,19 @@ const editArticle = (request, response, params) => {
     return;
   }
 
-  // Form query for inserting Articles into the Article table
-  let editArticleQuery = `UPDATE Article SET author = '${params.author}', authorWebsite = '${params.authorWebsite}',`;
-  editArticleQuery = `${editArticleQuery} title = '${params.title}', content = '${escapeQuotes(params.content)}', headerImageSrc = '${params.imageSrc}',`;
-  editArticleQuery = `${editArticleQuery} lastEditDate = NOW() WHERE isDeleted = 0 AND id = '${params.id}'`;
+  const edited = {
+    author: params.author,
+    authorWebsite: params.authorWebsite,
+    title: params.title,
+    content: params.content,
+    headerImageSrc: params.imageSrc,
+    lastEditDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+  };
 
   // Edit article
   const connection = sqlFunctions.getConnection();
   connection.connect(() => {
-    connection.query(editArticleQuery, (err) => {
+    connection.query('UPDATE Article SET ? WHERE isDeleted = 0 AND id = ?', [edited, params.id], (err) => {
       // Send 400 for failed sql search
       if (err) {
         const articleNotEditedContent = {
@@ -388,10 +398,9 @@ const deleteArticle = (request, response, params) => {
   }
 
   // Set article to isDeleted
-  const deleteArticleQuery = `UPDATE Article SET isDeleted = true WHERE id = '${params.id}'`;
   const connection = sqlFunctions.getConnection();
   connection.connect(() => {
-    connection.query(deleteArticleQuery, (err) => {
+    connection.query('UPDATE Article SET isDeleted = true WHERE id = ?', [params.id], (err) => {
       // Send 400 for failed sql search
       if (err) {
         const articleNotDeletedContent = {

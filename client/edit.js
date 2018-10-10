@@ -75,9 +75,15 @@
   };
 
   const editArticle = () => {
-    const articleId = editForm.getAttribute('data-article-id');
-    let path = `/editArticle?id=${articleId}&author=${author.value}&authorWebsite=${authorWebsite.value}`;
-    path = `${path}&title=${title.value}&imageSrc=${imageSrc.value}&content=${content.value}`;
+    const articleId = encodeURIComponent(editForm.getAttribute('data-article-id'));
+    const authorParam = encodeURIComponent(author.value);
+    const authorWebsiteParam = encodeURIComponent(authorWebsite.value);
+    const titleParam = encodeURIComponent(title.value);
+    const imageSrcParam = encodeURIComponent(imageSrc.value);
+    const contentParam = encodeURIComponent(content.value);
+
+    let path = `/editArticle?id=${articleId}&author=${authorParam}&authorWebsite=${authorWebsiteParam}`;
+    path = `${path}&title=${titleParam}&imageSrc=${imageSrcParam}&content=${contentParam}`;
 
     // Don't send a request to the API with faulty parameters
     if (articleId === null || !articleId || articleId === '') {

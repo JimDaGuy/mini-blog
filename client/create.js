@@ -1,10 +1,10 @@
 (function iife() {
   const postBlogArticle = () => {
-    const author = document.getElementById('blogAuthor').value;
-    const authorWebsite = document.getElementById('authorWebsite').value;
-    const title = document.getElementById('blogTitle').value;
-    const imageSrc = document.getElementById('blogImage').value;
-    const content = document.getElementById('blogContent').value;
+    const author = encodeURIComponent(document.getElementById('blogAuthor').value);
+    const authorWebsite = encodeURIComponent(document.getElementById('authorWebsite').value);
+    const title = encodeURIComponent(document.getElementById('blogTitle').value);
+    const imageSrc = encodeURIComponent(document.getElementById('blogImage').value);
+    const content = encodeURIComponent(document.getElementById('blogContent').value);
     const responseDiv = document.getElementById('responseDiv');
 
     const path = `/createArticle?author=${author}&authorWebsite=${authorWebsite}&title=${title}&imageSrc=${imageSrc}&content=${content}`;
@@ -18,7 +18,7 @@
     // Send post request to /createBlogpost
     const xhr = new XMLHttpRequest();
     xhr.open('POST', path);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Content-Type', 'application/application/x-www-form-urlencoded');
     xhr.onload = () => {
       responseDiv.innerHTML = xhr.responseText;
 
