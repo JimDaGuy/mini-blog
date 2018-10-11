@@ -18,7 +18,7 @@
     articleLink.textContent = 'Link to Article';
     articleLink.href = articleLinkHref;
     const articleAuthor = document.createElement('a');
-    articleAuthor.textContent = author;
+    articleAuthor.textContent = `By ${author}`;
     articleAuthor.href = authorWebsite;
     const articleDate = document.createElement('span');
     articleDate.textContent = postDate;
@@ -40,6 +40,7 @@
 
   const displayRecentArticles = (pageNumber, resultsPerPage) => {
     const articleListContainer = document.getElementById('articleListContainer');
+    const articleFilterBar = document.getElementById('articleListFilterBar');
 
     // Default values to page 1 and articles per page to 10
     const path = `/getRecentArticles?page=${pageNumber || 1}&rpp=${resultsPerPage || 10}`;
@@ -103,17 +104,57 @@
 
           articleListContainer.appendChild(articleDiv);
         }
+
+        articleFilterBar.innerHTML = '';
+
+        if (pageNumber < 2) {
+          for (let i = 0; i < 5; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = i + 1;
+            pageButton.onclick = () => { displayRecentArticles(i + 1, 10); };
+            articleFilterBar.appendChild(pageButton);
+          }
+        }
+
+        if (pageNumber > 2) {
+          for (let i = pageNumber - 2; i <= pageNumber + 2; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = i;
+            pageButton.onclick = () => { displayRecentArticles(i, 10); };
+            articleFilterBar.appendChild(pageButton);
+          }
+        }
         return;
       }
 
       // Article not found page
       if (xhr.status === 400) {
         articleListContainer.innerHTML = '';
+
+        articleFilterBar.innerHTML = '';
+
+        if (pageNumber < 2) {
+          for (let i = 0; i < 5; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = i + 1;
+            pageButton.onclick = () => { displayRecentArticles(i + 1, 10); };
+            articleFilterBar.appendChild(pageButton);
+          }
+        }
+
+        if (pageNumber > 2) {
+          for (let i = pageNumber - 2; i <= pageNumber + 2; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = i;
+            pageButton.onclick = () => { displayRecentArticles(i, 10); };
+            articleFilterBar.appendChild(pageButton);
+          }
+        }
         return;
       }
 
       // If an unhandled response is recieved, just stick the response in the div
-      articleListContainer.innerHTML = xhr.responseText;
+      articleListContainer.innerText = xhr.responseText;
     };
 
     xhr.send();

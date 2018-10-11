@@ -3,11 +3,11 @@ h1 {
 }
 
 #articleListContainer {
-  width: 50%;
+  width: 90%;
   border: 1px solid black;
   border-radius: 20px;
+  margin: 10px 5%;
   padding: 10px;
-  margin: 10px 2.5% 10px 5%;
   float: left;
 }
 
@@ -57,10 +57,58 @@ h1 {
 }
 
 #focusedArticleContainer {
-  width: 35%;
+  width: 90%;
+  max-height: 90vh;
   border: 1px solid black;
   border-radius: 20px;
+  margin: 10px 5%;
   padding: 10px;
-  margin: 10px 5% 10px 2.5%;
   float: left;
+  overflow: hidden;
+}
+
+.focusedH1 {
+  font-size: 1.5em;
+  line-height: 1em;
+  max-height: 2em;
+  overflow: hidden;
+}
+
+.focusedLink {
+  display: block;
+  clear: both;
+}
+
+.focusedAuthor {
+  display: block;
+  clear: both;
+}
+
+.focusedDate {
+  display: block;
+  clear: both;
+  font-weight: bold;
+}
+
+.focusedText {
+  margin: 10px;
+}
+
+#articleListFilterBar {
+  display: block;
+  clear: both;
+  float: left;
+  margin: 10px 5%;
+}
+
+@media only screen and (min-width: 600px) {
+  #articleListContainer {
+    width: 50%;
+    margin: 10px 2.5% 10px 5%;
+  }
+  
+  #focusedArticleContainer {
+    width: 35%;
+    margin: 10px 5% 10px 2.5%;
+  }
 }

@@ -17,6 +17,9 @@
     "type": "git",
     "url": "git+https://github.com/JimDaGuy/mini-blog.git"
   },
+  "nodemonConfig": {
+    "ext": "js css"
+  },
   "keywords": [
     "blog",
     "node",
