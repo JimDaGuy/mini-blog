@@ -107,16 +107,14 @@
 
         articleFilterBar.innerHTML = '';
 
-        if (pageNumber < 2) {
+        if (pageNumber < 3) {
           for (let i = 0; i < 5; i++) {
             const pageButton = document.createElement('button');
             pageButton.innerText = i + 1;
             pageButton.onclick = () => { displayRecentArticles(i + 1, 10); };
             articleFilterBar.appendChild(pageButton);
           }
-        }
-
-        if (pageNumber > 2) {
+        } else {
           for (let i = pageNumber - 2; i <= pageNumber + 2; i++) {
             const pageButton = document.createElement('button');
             pageButton.innerText = i;
@@ -133,7 +131,7 @@
 
         articleFilterBar.innerHTML = '';
 
-        if (pageNumber < 2) {
+        if (pageNumber < 3) {
           for (let i = 0; i < 5; i++) {
             const pageButton = document.createElement('button');
             pageButton.innerText = i + 1;
