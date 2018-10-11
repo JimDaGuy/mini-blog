@@ -1,0 +1,27 @@
+h1 {
+  margin: 10px;
+}
+
+.headerImage {
+  max-height: 35vh;
+}
+
+div {
+  margin: 10px;
+}
+
+a {
+  display: block;
+  clear: both;
+}
+
+span {
+  color: #337ab7;
+  display: block;
+  clear: both;
+}
+
+span:hover {
+  color: darkblue;
+  text-decoration: underline;
+}

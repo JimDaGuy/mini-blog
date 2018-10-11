@@ -7,7 +7,8 @@ h1 {
   border: 1px solid black;
   border-radius: 20px;
   padding: 10px;
-  margin: 10px 0 10px 5%;
+  margin: 10px 2.5% 10px 5%;
+  float: left;
 }
 
 .articleDiv {
@@ -22,6 +23,7 @@ h1 {
   width: 70%;
   height: 1.5em;
   line-height: 1.5em;
+  overflow: hidden;
   float: left;
   background-color: rgba(76, 226, 49, 0.6);
 }
@@ -29,8 +31,9 @@ h1 {
   width: 30%;
   height: 1.5em;
   line-height: 1.5em;
+  overflow: hidden;
   float: right;
-  text-align: right;
+  text-align: left;
   background-color: rgba(76, 226, 49, .6);
 }
 
@@ -53,3 +56,11 @@ h1 {
   background-color: rgba(113, 202, 238, 0.6);
 }
 
+#focusedArticleContainer {
+  width: 35%;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 10px;
+  margin: 10px 5% 10px 2.5%;
+  float: left;
+}

@@ -23,6 +23,7 @@
     // Send post request to /getArticle
     const xhr = new XMLHttpRequest();
     xhr.open('GET', path);
+    xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = () => {
       const responseJSON = JSON.parse(xhr.responseText);
@@ -92,6 +93,7 @@
 
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', path);
+    xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = () => {
       // Article was updated

@@ -18,6 +18,7 @@
     // Send post request to /createBlogpost
     const xhr = new XMLHttpRequest();
     xhr.open('POST', path);
+    xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
     xhr.setRequestHeader('Content-Type', 'application/application/x-www-form-urlencoded');
     xhr.onload = () => {
       responseDiv.innerHTML = xhr.responseText;

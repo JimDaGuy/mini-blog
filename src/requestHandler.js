@@ -254,7 +254,7 @@ const getRecentArticles = (request, response, params) => {
   const connection = sqlFunctions.getConnection();
 
   connection.connect(() => {
-    connection.query(`SELECT * FROM Article WHERE isDeleted = false ORDER BY creationDate DESC LIMIT ${params.rpp} OFFSET ${lowRow}`, (err, results) => {
+    connection.query('SELECT * FROM Article WHERE isDeleted = false ORDER BY creationDate DESC LIMIT ?, ?', [lowRow, parseInt(params.rpp, 10)], (err, results) => {
       // Send 400 on error
       if (err) {
         const articlesNotReturnedContent = {

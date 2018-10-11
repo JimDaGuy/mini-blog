@@ -1,4 +1,43 @@
 (function iife() {
+  const handleArticleClick = (i) => {
+    const focusedArticleContainer = document.getElementById('focusedArticleContainer');
+    focusedArticleContainer.innerHTML = '';
+
+    const articleItems = document.getElementsByClassName('articleDiv');
+    const clickedArticle = articleItems[i];
+    const title = clickedArticle.getAttribute('title');
+    const articleLinkHref = clickedArticle.getAttribute('articleLink');
+    const author = clickedArticle.getAttribute('author');
+    const authorWebsite = clickedArticle.getAttribute('authorWebsite');
+    const articleContent = clickedArticle.getAttribute('articleContent');
+    const postDate = clickedArticle.getAttribute('postDate');
+
+    const focusedH1 = document.createElement('h1');
+    focusedH1.textContent = title;
+    const articleLink = document.createElement('a');
+    articleLink.textContent = 'Link to Article';
+    articleLink.href = articleLinkHref;
+    const articleAuthor = document.createElement('a');
+    articleAuthor.textContent = author;
+    articleAuthor.href = authorWebsite;
+    const articleDate = document.createElement('span');
+    articleDate.textContent = postDate;
+    const articleText = document.createElement('p');
+    articleText.textContent = articleContent;
+
+    focusedH1.classList.add('focusedH1');
+    articleLink.classList.add('focusedLink');
+    articleAuthor.classList.add('focusedAuthor');
+    articleDate.classList.add('focusedDate');
+    articleText.classList.add('focusedText');
+
+    focusedArticleContainer.appendChild(focusedH1);
+    focusedArticleContainer.appendChild(articleAuthor);
+    focusedArticleContainer.appendChild(articleLink);
+    focusedArticleContainer.appendChild(articleDate);
+    focusedArticleContainer.appendChild(articleText);
+  };
+
   const displayRecentArticles = (pageNumber, resultsPerPage) => {
     const articleListContainer = document.getElementById('articleListContainer');
 
@@ -8,9 +47,9 @@
     // Send post request to /getArticle
     const xhr = new XMLHttpRequest();
     xhr.open('GET', path);
+    xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = () => {
-      console.dir(xhr.responseText);
       const responseJSON = JSON.parse(xhr.responseText);
 
       // Display article
@@ -19,12 +58,19 @@
         const articles = responseJSON.articles;
 
         for (let i = 0; i < articles.length; i++) {
-          // console.dir(articles[i]);
           const articleDiv = document.createElement('div');
-          const articleHeadline = document.createElement('a');
-          const articleAuthor = document.createElement('a');
-          const articleSecondaryLine = document.createElement('span');
-          const articleCreationDate = document.createElement('span');
+          const articleHeadline = document.createElement('div');
+          const headlineLink = document.createElement('a');
+          articleHeadline.appendChild(headlineLink);
+          const articleAuthor = document.createElement('div');
+          const authorLink = document.createElement('a');
+          articleAuthor.appendChild(authorLink);
+          const articleSecondaryLine = document.createElement('div');
+          const articleSecondarySpan = document.createElement('span');
+          articleSecondaryLine.appendChild(articleSecondarySpan);
+          const articleCreationDate = document.createElement('div');
+          const articleCreationSpan = document.createElement('span');
+          articleCreationDate.appendChild(articleCreationSpan);
 
           articleDiv.classList.add('articleDiv');
           articleHeadline.classList.add('articleHeadline');
@@ -33,18 +79,27 @@
           articleCreationDate.classList.add('articleCreationDate');
 
           // articleDiv.style.backgroundImage = `url(${articles[i].headerImageSrc})`;
-          articleHeadline.textContent = articles[i].title;
-          articleHeadline.href = `/article?id=${articles[i].id}`;
-          articleAuthor.textContent = `by ${articles[i].author}`;
-          articleAuthor.href = articles[i].authorWebsite;
-          articleSecondaryLine.textContent = articles[i].content;
+          headlineLink.textContent = articles[i].title;
+          headlineLink.href = `/article?id=${articles[i].id}`;
+          authorLink.textContent = `by ${articles[i].author}`;
+          authorLink.href = articles[i].authorWebsite;
+          articleSecondarySpan.textContent = articles[i].content;
           const createdDate = articles[i].creationDate.split('T');
-          articleCreationDate.textContent = `Posted ${createdDate[0]}`;
+          articleCreationSpan.textContent = `Posted ${createdDate[0]}`;
+
+          // Add information attributes to the article div
+          articleDiv.setAttribute('title', articles[i].title);
+          articleDiv.setAttribute('articleLink', `/article?id=${articles[i].id}`);
+          articleDiv.setAttribute('author', articles[i].author);
+          articleDiv.setAttribute('authorWebsite', articles[i].authorWebsite);
+          articleDiv.setAttribute('articleContent', articles[i].content);
+          articleDiv.setAttribute('postDate', `Posted ${createdDate[0]}`);
 
           articleDiv.appendChild(articleHeadline);
           articleDiv.appendChild(articleAuthor);
           articleDiv.appendChild(articleSecondaryLine);
           articleDiv.appendChild(articleCreationDate);
+          articleDiv.addEventListener('click', () => { handleArticleClick(i); });
 
           articleListContainer.appendChild(articleDiv);
         }
