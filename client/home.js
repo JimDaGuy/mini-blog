@@ -138,9 +138,7 @@
             pageButton.onclick = () => { displayRecentArticles(i + 1, 10); };
             articleFilterBar.appendChild(pageButton);
           }
-        }
-
-        if (pageNumber > 2) {
+        } else (pageNumber > 2) {
           for (let i = pageNumber - 2; i <= pageNumber + 2; i++) {
             const pageButton = document.createElement('button');
             pageButton.innerText = i;
